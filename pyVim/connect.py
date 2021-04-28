@@ -598,7 +598,10 @@ def __GetElementTree(protocol, server, port, path, sslContext, httpProxyHost=Non
       conn.set_tunnel(server, port)
    elif protocol == "https":
       kwargs = {"context": sslContext} if sslContext else {}
-      conn = http_client.HTTPSConnection(server, port=port, **kwargs)
+      # IPv6 requires None as the port
+      if port:
+         server = server + ":" + str(port)
+      conn = http_client.HTTPSConnection(server, None, **kwargs)
    elif protocol == "http":
       conn = http_client.HTTPConnection(server, port=port)
    else:
